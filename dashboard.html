@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background: linear-gradient(135deg, #4c4177, #2a5470);
+            color: #f8f9fa;
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #f8f9fa;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        header img {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 50px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .toggle-dark-mode {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f39c12;
+            color: #2c3e50;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #f39c12;
+        }
+        .profile-info {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+        }
+        .profile-info strong {
+            color: #f39c12;
+        }
+
+        .button {
+            padding: 1rem;
+            background-color: #f39c12;
+            color: #2c3e50;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            width: 48%;
+            box-sizing: border-box;
+            margin: 10px 1%;
+        }
+
+        .button:hover {
+            background-color: #f5b041;
+        }
+
+        #signOutButton {
+            background-color: #f39c12;
+            color: #2c3e50;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 48%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            margin: 10px 1%;
+        }
+
+        #signOutButton:hover {
+            background-color: #f5b041;
+        }
+
+        .alert {
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .trigger-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 48%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            margin: 10px 1%;
+        }
+
+        .trigger-btn:hover {
+            background-color: #c0392b;
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+
+        /* Chatbot Styles */
+        .chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .chatbot-window {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+        }
+        .chat-header {
+            background: #2c3e50;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-body {
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .user-message {
+            text-align: right;
+            font-weight: bold;
+            color: #f39c12;
+        }
+        .bot-message {
+            text-align: left;
+            color: #2c3e50;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+        }
+        .chat-input input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .chat-input button {
+            background: #f39c12;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-input button:hover {
+            background: #f5b041;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header>
+        <img src="logo.png" alt="Safety Hub Logo">
+        <h1>Your Profile</h1>
+        <button class="toggle-dark-mode" id="toggleButton" onclick="toggleDarkMode()">Dark Mode</button>
+    </header>
+
+    <div class="container">
+        <h2>Your Profile Details</h2>
+        <p class="profile-info"><strong>Name:</strong> <span id="profileName"></span></p>
+        <p class="profile-info"><strong>Email:</strong> <span id="profileEmail"></span></p>
+        <p class="profile-info"><strong>Phone Number:</strong> <span id="profilePhone"></span></p>
+        <p class="profile-info"><strong>Blood Group:</strong> <span id="profileBlood"></span></p>
+        <p class="profile-info"><strong>Family Contact:</strong> <span id="profileFamily"></span></p>
+        
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <button class="button" id="signOutButton" onclick="signOut()">Sign Out</button>
+            <button class="trigger-btn" onclick="triggerEmergency()">Trigger Emergency</button>
+        </div>
+        
+        <!-- Alert Box -->
+        <div class="alert" id="emergencyAlert">Emergency has been triggered! Help is on the way.</div>
+        
+        <!-- Map -->
+        <div id="map"></div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-icon" id="chatbotIcon">💬</div>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chat-header">
+            <h4>Safety Hub Assistant</h4>
+            <button id="closeChatbot">×</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="message bot-message">
+                Hi! How can I help you today?
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="sendMessage">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users[0]; // Assume the user is already signed in
+
+        document.getElementById('profileName').textContent = user.name;
+        document.getElementById('profileEmail').textContent = user.email;
+        document.getElementById('profilePhone').textContent = user.phone;
+        document.getElementById('profileBlood').textContent = user.bloodGroup;
+        document.getElementById('profileFamily').textContent = user.familyContact;
+
+        function toggleDarkMode() {
+            const body = document.body;
+            const button = document.getElementById('toggleButton');
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            if (body.classList.contains('dark-mode')) {
+                button.textContent = 'Light Mode';
+            } else {
+                button.textContent = 'Dark Mode';
+            }
+        }
+
+        function signOut() {
+            window.location.href = 'index.html'; // Redirect to the main page
+        }
+
+        // Emergency trigger function
+        function triggerEmergency() {
+            const alertBox = document.getElementById('emergencyAlert');
+            alertBox.style.display = 'block';
+            setTimeout(function() {
+                alertBox.style.display = 'none';
+            }, 5000); // Hide the alert after 5 seconds
+        }
+
+        // Initialize Google Map with live location
+        function initMap() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const userLocation = { lat: position.coords.latitude, lng: position.coords.longitude };
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        center: userLocation,
+                        zoom: 14,
+                    });
+
+                    new google.maps.Marker({
+                        position: userLocation,
+                        map: map,
+                        title: "You are here",
+                    });
+                }, handleGeolocationError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Handle errors for geolocation
+        function handleGeolocationError(error) {
+            alert("Error getting location: " + error.message);
+        }
+
+        // Load Google Maps script dynamically
+        const script = document.createElement('script');
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyALzeiFfgQIYBQtQK2-cLrGoDqfAR2qxD8&callback=initMap"; // Replace with your Google Maps API key
+        document.head.appendChild(script);
+
+        // Chatbot Responses
+        const responses = {
+            "how does it work": "Safety Hub continuously monitors your speed and movement using its built-in accelerometer sensor and GPS tracking system. If it detects unusual speed fluctuations (e.g., a sudden drop from 40 km/h to 0 km/h), it initiates an emergency protocol and sends your location to the nearest hospital and police station.",
+            "false alarms": "To prevent false alarms, the app includes a safety confirmation feature. If an accident is detected, a notification pops up on your phone. If you're safe, you can cancel the alert within 10 seconds. If no action is taken, the alert is automatically sent.",
+            "emergency contacts": "You can add trusted family members or friends as emergency contacts. They will be instantly notified in case of an accident.",
+            "real-time location": "The app allows you to share your live location with loved ones for additional security.",
+            "ai impact analysis": "Using AI, the app determines the severity of an accident based on factors like speed at impact, location, and previous user behavior to provide accurate emergency response times."
+        };
+
+        document.getElementById('sendMessage').addEventListener('click', function () {
+            const chatInput = document.getElementById('chatInput');
+            const userMessage = chatInput.value.trim();
+            if (userMessage) {
+                displayMessage(userMessage, 'user-message');
+                chatInput.value = '';
+                respondToUser(userMessage.toLowerCase());
+            }
+        });
+
+        document.getElementById('closeChatbot').addEventListener('click', function () {
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            chatbotWindow.style.display = 'none';
+        });
+
+        document.getElementById('chatbotIcon').addEventListener('click', function () {
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            chatbotWindow.style.display = chatbotWindow.style.display === 'none' ? 'flex' : 'none';
+        });
+
+        function respondToUser(message) {
+            const botMessage = responses[message] || "I'm sorry, I don't understand that. Can you please rephrase?";
+            displayMessage(botMessage, 'bot-message');
+        }
+
+        function displayMessage(text, messageType) {
+            const chatBody = document.getElementById('chatBody');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${messageType}`;
+            messageDiv.textContent = text;
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight; // Scroll to the bottom of chat
+        }
+    </script>
+</body>
+</html>

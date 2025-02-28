@@ -1,0 +1,58 @@
+/* Dashboard Styles */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.profile-section, .map-section, .emergency-section, .activity-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.sos-button {
+    width: 100%;
+    padding: 1.5rem;
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sos-button:hover {
+    background-color: #c0392b;
+}
+
+.alert {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #2ecc71;
+    color: #fff;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#map {
+    height: 400px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.activity-log {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}

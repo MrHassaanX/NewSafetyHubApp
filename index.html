@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Hub</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .feature-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain; /* Ensures the image maintains its aspect ratio */
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            text-align: left;
+        }
+
+        header nav {
+            display: flex;
+            gap: 15px; /* Reduced gap between navigation links */
+        }
+
+        .hero {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero img {
+            width: 100px; /* Adjust as needed */
+            height: auto;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Safety Hub</h1>
+        <nav>
+            <a href="#" class="nav-link">Home</a>
+            <a href="#" class="nav-link">Features</a>
+            <a href="#" class="nav-link">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <img src="assets/logo.png" alt="Safety Hub Logo">
+        <h2>Your Guardian on the Road</h2>
+        <p>Instant accident detection and emergency alerts.</p>
+        <div class="cta-buttons">
+            <button class="primary" onclick="window.location.href='register.html'">Register Now</button>
+            <button class="secondary" onclick="window.location.href='signin.html'">Sign In</button>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <img src="assets/accident-icon.png" width="100" height="100" alt="Accident Detection">
+            <h3>Accident Detection</h3>
+            <p>Automatically detects accidents and alerts emergency services.</p>
+        </div>
+        <div class="feature-card">
+            <img src="assets/location-icon.png" width="100" height="100" alt="Real-Time Location">
+            <h3>Real-Time Location</h3>
+            <p>Share your live location with trusted contacts.</p>
+        </div>
+        <div class="feature-card">
+            <img src="assets/ai-icon.png" width="100" height="100" alt="AI Analysis">
+            <h3>AI Analysis</h3>
+            <p>Advanced AI to determine accident severity.</p>
+        </div>
+    </section>
+
+    <!-- Chatbot -->
+    <div class="chatbot-icon" id="chatbotIcon">💬</div>
+    <div class="chatbot-window hidden" id="chatbotWindow">
+        <div class="chat-header">
+            <h4>Safety Hub Assistant</h4>
+            <button id="closeChatbot">×</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="message bot-message">
+                Hi! How can I help you today?
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="sendMessage">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Chatbot Responses
+        const responses = {
+            "how does it work": "Safety Hub continuously monitors your speed and movement using its built-in accelerometer sensor and GPS tracking system. If it detects unusual speed fluctuations (e.g., a sudden drop from 40 km/h to 0 km/h), it initiates an emergency protocol and sends your location to the nearest hospital and police station.",
+            "false alarms": "To prevent false alarms, the app includes a safety confirmation feature. If an accident is detected, a notification pops up on your phone. If you're safe, you can cancel the alert within 10 seconds. If no action is taken, the alert is automatically sent.",
+            "emergency contacts": "You can add trusted family members or friends as emergency contacts. They will be instantly notified in case of an accident.",
+            "real-time location": "The app allows you to share your live location with loved ones for additional security.",
+            "ai impact analysis": "Using AI, the app determines the severity of an accident based on factors like speed, angle of impact, and sudden force applied. This helps emergency responders prioritize critical cases.",
+            "offline functionality": "If you're in a low-network area, the app switches to SMS-based alerts. Emergency messages, along with your last known location, are sent via SMS to hospitals, police, and emergency contacts.",
+            "sensitivity settings": "You can adjust accident detection sensitivity based on your driving style and terrain to minimize false detections.",
+            "multi-vehicle support": "The app works with bikes, cars, scooters, e-bikes, and electric vehicles.",
+            "sos button": "In case of a medical emergency or unsafe situation, you can manually press the SOS button to notify emergency contacts and authorities.",
+            "voice commands": "If you're injured or unable to access your phone, you can activate the SOS function via voice commands.",
+            "smartwatch integration": "The app works with smartwatches like Apple Watch and Wear OS devices. If a crash is detected, the watch will vibrate and sound an alert.",
+            "why it matters": "According to WHO, 1.3 million people die in road accidents each year. Safety Hub ensures instant emergency alerts are sent automatically, even if the victim is unconscious.",
+            "future updates": "Future updates include auto-call features, integration with dashcams and helmets, fatigue detection, and insurance integration.",
+            "free to use": "Yes! The basic features are free. Premium features like AI impact analysis may be offered as optional upgrades.",
+            "battery drain": "The app is optimized for low power consumption. It only uses GPS and sensors when needed.",
+            "cyclists and pedestrians": "Yes! The app detects falls and severe impacts, making it useful for cyclists, runners, and construction workers.",
+            "rough terrain": "You can customize detection levels based on your riding style and terrain.",
+            "default": "I'm here to help! Ask me about Safety Hub's features, how it works, or anything else."
+        };
+
+        // Chatbot Functionality
+        const chatbotIcon = document.getElementById('chatbotIcon');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const closeChatbot = document.getElementById('closeChatbot');
+        const chatInput = document.getElementById('chatInput');
+        const chatBody = document.getElementById('chatBody');
+        const sendMessageButton = document.getElementById('sendMessage');
+
+        // Toggle Chatbot Window
+        chatbotIcon.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('hidden');
+        });
+
+        // Close Chatbot Window
+        closeChatbot.addEventListener('click', () => {
+            chatbotWindow.classList.add('hidden');
+        });
+
+        // Send Message Function
+        function sendMessage() {
+            const userMessage = chatInput.value.trim().toLowerCase();
+            if (userMessage === "") return;
+
+            // User Message
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.textContent = userMessage;
+            chatBody.appendChild(userMessageDiv);
+
+            // Bot Response
+            let botResponse = responses[userMessage] || responses["default"];
+            const botMessageDiv = document.createElement('div');
+            botMessageDiv.className = 'message bot-message';
+            botMessageDiv.textContent = botResponse;
+            chatBody.appendChild(botMessageDiv);
+
+            // Clear Input
+            chatInput.value = "";
+
+            // Scroll to Bottom
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // Send Message on Enter Key
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Send Message on Button Click
+        sendMessageButton.addEventListener('click', sendMessage);
+    </script>
+</body>
+</html>
